@@ -7,13 +7,13 @@
 	<artifactId>spring-ee-playground</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	
+
 	<properties>
 		<spring-version>6.2.14</spring-version>
 	</properties>
-	
+
 	<dependencies>
-	
+
 		<!-- SPRING -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -46,29 +46,30 @@
 			<version>${spring-version}</version>
 		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring-version}</version>
-        </dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
 		<!-- SPRING -->
-		
-		
+
+
 		<!-- JSON -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.19.2</version>
 		</dependency>
-		
-		<!-- Add-on module to support JSR-310 (Java 8 Date & Time API) data types. -->
+
+		<!-- Add-on module to support JSR-310 (Java 8 Date & Time API) data
+		types. -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>2.19.2</version>
 		</dependency>
 		<!-- JSON -->
-		
-		
+
+
 		<!-- JAXB -->
 		<!-- API, java.xml.bind module -->
 		<dependency>
@@ -82,7 +83,7 @@
 			<artifactId>jaxb-runtime</artifactId>
 			<version>4.0.5</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-oxm</artifactId>
@@ -90,7 +91,17 @@
 		</dependency>
 		<!-- JAXB -->
 		
-		
+
+		<!-- WEBSOCKETS API -->
+		<dependency>
+			<groupId>jakarta.websocket</groupId>
+			<artifactId>jakarta.websocket-api</artifactId>
+			<version>2.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- WEBSOCKETS API -->
+
+
 		<!-- LOGGERS -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -130,7 +141,7 @@
 			<version>2.25.2</version>
 		</dependency>
 		<!-- LOGGERS -->
-		
+
 	</dependencies>
 
 	<build>
