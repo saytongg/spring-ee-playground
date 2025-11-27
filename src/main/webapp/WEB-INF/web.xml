@@ -20,6 +20,13 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>com.saytongg.shared.main.MainConfiguration</param-value>
 	</context-param>
+	<context-param>
+	    <param-name>spring.profiles.default</param-name>
+	    <param-value>dev</param-value>
+	</context-param>
+	
+	<!-- DO NOT REMOVE -->
+	<!-- ${spring-profiles-active-params} -->
 	
 	
 	<listener>

@@ -11,7 +11,56 @@
 	<properties>
 		<spring-version>6.2.14</spring-version>
 		<hibernate-version>6.6.25.Final</hibernate-version>
+		
+		<project.java.source.version>17</project.java.source.version>
+		<project.java.target.version>17</project.java.target.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>dev</spring.profiles.active>
+				<spring-profiles-active-params><![CDATA[ -->
+				    <context-param>
+				        <param-name>spring.profiles.active</param-name>
+				        <param-value>${spring.profiles.active}</param-value>
+				    </context-param>
+				    <!-- ]]>
+				</spring-profiles-active-params>
+			</properties>
+		</profile>
+		<profile>
+			<id>staging</id>
+			<properties>
+				<spring.profiles.active>staging</spring.profiles.active>
+				<spring-profiles-active-params><![CDATA[ -->
+				    <context-param>
+				        <param-name>spring.profiles.active</param-name>
+				        <param-value>${spring.profiles.active}</param-value>
+				    </context-param>
+				    <!-- ]]>
+				</spring-profiles-active-params>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<spring.profiles.active>prod</spring.profiles.active>
+				<spring-profiles-active-params><![CDATA[ -->
+				    <context-param>
+				        <param-name>spring.profiles.active</param-name>
+				        <param-value>${spring.profiles.active}</param-value>
+				    </context-param>
+				    <!-- ]]>
+				</spring-profiles-active-params>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 	
@@ -146,6 +195,14 @@
 			<version>2.2.0</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- ref: https://stackoverflow.com/questions/75239782/springboot-stomp-websocket-does-not-find-jakarta-websocket -->
+		<dependency>
+		    <groupId>jakarta.websocket</groupId>
+		    <artifactId>jakarta.websocket-client-api</artifactId>
+		    <version>2.2.0</version>
+		    <scope>provided</scope>
+		</dependency>
 		<!-- WEBSOCKETS API -->
 		
 		
@@ -197,21 +254,86 @@
 			<version>2.25.2</version>
 		</dependency>
 		<!-- LOGGERS -->
+		
+		
+		<!-- UTILS -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		    <version>3.20.0</version>
+		</dependency>
+		<!-- UTILS -->
 
 	</dependencies>
 
 	<build>
+		<finalName>webapp-${spring.profiles.active}-${build.time}</finalName>
+		
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>properties/**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>properties/**/*.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		
 		<plugins>
+			<!-- Plugin for generating timestamp that will be used in naming the build -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<id>timestamp-property</id>
+						<goals>
+							<goal>timestamp-property</goal>
+						</goals>
+						<configuration>
+							<name>build.time</name>
+							<pattern>yyyyMMdd-hhmmss</pattern>
+							<locale>en_US</locale>
+							<timeZone>Asia/Manila</timeZone>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<release>17</release>
+					<source>${project.java.source.version}</source>
+					<target>${project.java.target.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
+
+			<!-- Plugin for generating the war build. It has utilities for filtering resources outside main/resources. -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.2.3</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<targetPath>WEB-INF</targetPath>
+							<directory>src/main/webapp/WEB-INF</directory>
+							<includes>
+								<include>web.xml</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
