@@ -1,7 +1,11 @@
 package com.saytongg.mock;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import jakarta.websocket.OnClose;
@@ -15,6 +19,10 @@ import jakarta.websocket.server.ServerEndpoint;
 public class MockWebsocketEndpoint extends SpringBeanAutowiringSupport{
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Autowired
+	@Qualifier("mockService")
+	private MockService mockService;
 	
 	@OnOpen
 	public void onOpen(Session session) {
@@ -31,7 +39,15 @@ public class MockWebsocketEndpoint extends SpringBeanAutowiringSupport{
 		logger.info("Message is {} from session {}", message, session.getId());
 		
 		try {
-			session.getBasicRemote().sendText("Echoing message: " + message);
+			Long id = Long.valueOf(message);
+			Optional<MockEntity> mockEntity = mockService.getById(id);
+			
+			if(mockEntity.isEmpty()) {
+				session.getBasicRemote().sendText("There is no mock entity associated with id " + message);
+			}	
+			else {
+				session.getBasicRemote().sendText("Name of mock entity is " + mockEntity.get().getName());
+			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();
